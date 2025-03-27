@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋游戏</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(15, 40px); /* 每格宽度 */
+            grid-template-rows: repeat(15, 40px); /* 每格高度 */
+            gap: 0;
+            background-color: #dcb35c;
+            position: relative;
+            padding: 20px;
+        }
+        .cell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .cell::before, .cell::after {
+            content: '';
+            position: absolute;
+            background-color: #000;
+        }
+        .cell::before {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        .cell::after {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        .stone {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .stone.black {
+            background-color: black;
+        }
+        .stone.white {
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+        .restart-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .restart-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="board" id="board">
+            <!-- 生成15x15个格子 -->
+            <div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div><div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div><div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div><div class="cell" data-index="9"></div><div class="cell" data-index="10"></div><div class="cell" data-index="11"></div><div class="cell" data-index="12"></div><div class="cell" data-index="13"></div><div class="cell" data-index="14"></div>
+            <div class="cell" data-index="15"></div><div class="cell" data-index="16"></div><div class="cell" data-index="17"></div><div class="cell" data-index="18"></div><div class="cell" data-index="19"></div><div class="cell" data-index="20"></div><div class="cell" data-index="21"></div><div class="cell" data-index="22"></div><div class="cell" data-index="23"></div><div class="cell" data-index="24"></div><div class="cell" data-index="25"></div><div class="cell" data-index="26"></div><div class="cell" data-index="27"></div><div class="cell" data-index="28"></div><div class="cell" data-index="29"></div>
+            <div class="cell" data-index="30"></div><div class="cell" data-index="31"></div><div class="cell" data-index="32"></div><div class="cell" data-index="33"></div><div class="cell" data-index="34"></div><div class="cell" data-index="35"></div><div class="cell" data-index="36"></div><div class="cell" data-index="37"></div><div class="cell" data-index="38"></div><div class="cell" data-index="39"></div><div class="cell" data-index="40"></div><div class="cell" data-index="41"></div><div class="cell" data-index="42"></div><div class="cell" data-index="43"></div><div class="cell" data-index="44"></div>
+            <div class="cell" data-index="45"></div><div class="cell" data-index="46"></div><div class="cell" data-index="47"></div><div class="cell" data-index="48"></div><div class="cell" data-index="49"></div><div class="cell" data-index="50"></div><div class="cell" data-index="51"></div><div class="cell" data-index="52"></div><div class="cell" data-index="53"></div><div class="cell" data-index="54"></div><div class="cell" data-index="55"></div><div class="cell" data-index="56"></div><div class="cell" data-index="57"></div><div class="cell" data-index="58"></div><div class="cell" data-index="59"></div>
+            <div class="cell" data-index="60"></div><div class="cell" data-index="61"></div><div class="cell" data-index="62"></div><div class="cell" data-index="63"></div><div class="cell" data-index="64"></div><div class="cell" data-index="65"></div><div class="cell" data-index="66"></div><div class="cell" data-index="67"></div><div class="cell" data-index="68"></div><div class="cell" data-index="69"></div><div class="cell" data-index="70"></div><div class="cell" data-index="71"></div><div class="cell" data-index="72"></div><div class="cell" data-index="73"></div><div class="cell" data-index="74"></div>
+            <div class="cell" data-index="75"></div><div class="cell" data-index="76"></div><div class="cell" data-index="77"></div><div class="cell" data-index="78"></div><div class="cell" data-index="79"></div><div class="cell" data-index="80"></div><div class="cell" data-index="81"></div><div class="cell" data-index="82"></div><div class="cell" data-index="83"></div><div class="cell" data-index="84"></div><div class="cell" data-index="85"></div><div class="cell" data-index="86"></div><div class="cell" data-index="87"></div><div class="cell" data-index="88"></div><div class="cell" data-index="89"></div>
+            <div class="cell" data-index="90"></div><div class="cell" data-index="91"></div><div class="cell" data-index="92"></div><div class="cell" data-index="93"></div><div class="cell" data-index="94"></div><div class="cell" data-index="95"></div><div class="cell" data-index="96"></div><div class="cell" data-index="97"></div><div class="cell" data-index="98"></div><div class="cell" data-index="99"></div><div class="cell" data-index="100"></div><div class="cell" data-index="101"></div><div class="cell" data-index="102"></div><div class="cell" data-index="103"></div><div class="cell" data-index="104"></div>
+            <div class="cell" data-index="105"></div><div class="cell" data-index="106"></div><div class="cell" data-index="107"></div><div class="cell" data-index="108"></div><div class="cell" data-index="109"></div><div class="cell" data-index="110"></div><div class="cell" data-index="111"></div><div class="cell" data-index="112"></div><div class="cell" data-index="113"></div><div class="cell" data-index="114"></div><div class="cell" data-index="115"></div><div class="cell" data-index="116"></div><div class="cell" data-index="117"></div><div class="cell" data-index="118"></div><div class="cell" data-index="119"></div>
+            <div class="cell" data-index="120"></div><div class="cell" data-index="121"></div><div class="cell" data-index="122"></div><div class="cell" data-index="123"></div><div class="cell" data-index="124"></div><div class="cell" data-index="125"></div><div class="cell" data-index="126"></div><div class="cell" data-index="127"></div><div class="cell" data-index="128"></div><div class="cell" data-index="129"></div><div class="cell" data-index="130"></div><div class="cell" data-index="131"></div><div class="cell" data-index="132"></div><div class="cell" data-index="133"></div><div class="cell" data-index="134"></div>
+            <div class="cell" data-index="135"></div><div class="cell" data-index="136"></div><div class="cell" data-index="137"></div><div class="cell" data-index="138"></div><div class="cell" data-index="139"></div><div class="cell" data-index="140"></div><div class="cell" data-index="141"></div><div class="cell" data-index="142"></div><div class="cell" data-index="143"></div><div class="cell" data-index="144"></div><div class="cell" data-index="145"></div><div class="cell" data-index="146"></div><div class="cell" data-index="147"></div><div class="cell" data-index="148"></div><div class="cell" data-index="149"></div>
+            <div class="cell" data-index="150"></div><div class="cell" data-index="151"></div><div class="cell" data-index="152"></div><div class="cell" data-index="153"></div><div class="cell" data-index="154"></div><div class="cell" data-index="155"></div><div class="cell" data-index="156"></div><div class="cell" data-index="157"></div><div class="cell" data-index="158"></div><div class="cell" data-index="159"></div><div class="cell" data-index="160"></div><div class="cell" data-index="161"></div><div class="cell" data-index="162"></div><div class="cell" data-index="163"></div><div class="cell" data-index="164"></div>
+            <div class="cell" data-index="165"></div><div class="cell" data-index="166"></div><div class="cell" data-index="167"></div><div class="cell" data-index="168"></div><div class="cell" data-index="169"></div><div class="cell" data-index="170"></div><div class="cell" data-index="171"></div><div class="cell" data-index="172"></div><div class="cell" data-index="173"></div><div class="cell" data-index="174"></div><div class="cell" data-index="175"></div><div class="cell" data-index="176"></div><div class="cell" data-index="177"></div><div class="cell" data-index="178"></div><div class="cell" data-index="179"></div>
+            <div class="cell" data-index="180"></div><div class="cell" data-index="181"></div><div class="cell" data-index="182"></div><div class="cell" data-index="183"></div><div class="cell" data-index="184"></div><div class="cell" data-index="185"></div><div class="cell" data-index="186"></div><div class="cell" data-index="187"></div><div class="cell" data-index="188"></div><div class="cell" data-index="189"></div><div class="cell" data-index="190"></div><div class="cell" data-index="191"></div><div class="cell" data-index="192"></div><div class="cell" data-index="193"></div><div class="cell" data-index="194"></div>
+            <div class="cell" data-index="195"></div><div class="cell" data-index="196"></div><div class="cell" data-index="197"></div><div class="cell" data-index="198"></div><div class="cell" data-index="199"></div><div class="cell" data-index="200"></div><div class="cell" data-index="201"></div><div class="cell" data-index="202"></div><div class="cell" data-index="203"></div><div class="cell" data-index="204"></div><div class="cell" data-index="205"></div><div class="cell" data-index="206"></div><div class="cell" data-index="207"></div><div class="cell" data-index="208"></div><div class="cell" data-index="209"></div>
+            <div class="cell" data-index="210"></div><div class="cell" data-index="211"></div><div class="cell" data-index="212"></div><div class="cell" data-index="213"></div><div class="cell" data-index="214"></div><div class="cell" data-index="215"></div><div class="cell" data-index="216"></div><div class="cell" data-index="217"></div><div class="cell" data-index="218"></div><div class="cell" data-index="219"></div><div class="cell" data-index="220"></div><div class="cell" data-index="221"></div><div class="cell" data-index="222"></div><div class="cell" data-index="223"></div><div class="cell" data-index="224"></div>
+        </div>
+        <div class="message" id="message"></div>
+        <button class="restart-button" id="restartButton">重新开始</button>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const message = document.getElementById('message');
+        const restartButton = document.getElementById('restartButton');
+        let currentPlayer = 'black'; // 当前玩家
+        let gameOver = false; // 游戏是否结束
+        let grid = Array(15).fill().map(() => Array(15).fill(null)); // 棋盘状态
+
+        // 初始化棋盘
+        board.addEventListener('click', (event) => {
+            if (gameOver) return; // 游戏结束后不再响应点击
+
+            const cell = event.target.closest('.cell');
+            if (!cell) return;
+            
+            const index = cell.dataset.index;
+            const row = Math.floor(index / 15);
+            const col = index % 15;
+            
+            // 检查是否已有棋子
+            if (grid[row][col]) return;
+
+            // 下子
+            grid[row][col] = currentPlayer;
+            
+            // 创建棋子元素
+            const stone = document.createElement('div');
+            stone.className = `stone ${currentPlayer}`;
+            cell.appendChild(stone);
+
+            // 检查是否胜利
+            if (checkWin(row, col)) {
+                message.textContent = `${currentPlayer === 'black' ? '黑棋' : '白棋'}获胜！`;
+                gameOver = true;
+                return;
+            }
+
+            // 切换玩家
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            message.textContent = `轮到${currentPlayer === 'black' ? '黑棋' : '白棋'}下子`;
+        });
+
+        // 重新开始游戏
+        restartButton.addEventListener('click', () => {
+            // 清空棋盘
+            board.querySelectorAll('.stone').forEach(stone => {
+                stone.remove();
+            });
+            // 重置棋盘状态
+            grid = Array(15).fill().map(() => Array(15).fill(null));
+            // 重置游戏状态
+            gameOver = false;
+            currentPlayer = 'black';
+            message.textContent = '轮到黑棋下子';
+        });
+
+        // 检查是否胜利
+        function checkWin(row, col) {
+            const directions = [
+                [1, 0],  // 水平
+                [0, 1],  // 垂直
+                [1, 1],  // 对角线（右下）
+                [1, -1]  // 对角线（左下）
+            ];
+
+            for (const [dx, dy] of directions) {
+                let count = 1;
+                // 向一个方向检查
+                for (let i = 1; i < 5; i++) {
+                    const newRow = row + dx * i;
+                    const newCol = col + dy * i;
+                    if (newRow < 0 || newRow >= 15 || newCol < 0 || newCol >= 15 || grid[newRow][newCol] !== currentPlayer) break;
+                    count++;
+                }
+                // 向相反方向检查
+                for (let i = 1; i < 5; i++) {
+                    const newRow = row - dx * i;
+                    const newCol = col - dy * i;
+                    if (newRow < 0 || newRow >= 15 || newCol < 0 || newCol >= 15 || grid[newRow][newCol] !== currentPlayer) break;
+                    count++;
+                }
+                // 如果连续5子，返回true
+                if (count >= 5) return true;
+            }
+            return false;
+        }
+
+        // 初始化消息
+        message.textContent = '轮到黑棋下子';
+    </script>
+</body>
+</html>
